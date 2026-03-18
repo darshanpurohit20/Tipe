@@ -136,7 +136,7 @@ export default function LoginPage() {
                                 <input
                                     type={showPassword ? "text" : "password"}
                                     required
-                                    placeholder="••••••••"
+                                    placeholder="123456"
                                     className="w-full pl-10 pr-12 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all font-medium"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}

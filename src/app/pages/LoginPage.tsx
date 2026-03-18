@@ -53,43 +53,43 @@ export default function LoginPage() {
                         <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
                             <Sparkles className="w-6 h-6" />
                         </div>
-                        <span className="text-2xl font-bold">ProExport</span>
+                        <span className="text-2xl font-bold uppercase tracking-wider">Tipe</span>
                     </div>
 
                     <h1 className="text-5xl font-bold mb-6 leading-tight">
-                        AI-Powered Export <br /> Growth Engine
+                        Trade Intent <br /> Prediction Engine
                     </h1>
                     <p className="text-xl text-blue-100 mb-12 max-w-lg">
-                        Scale your manufacturing exports with intelligent lead generation and automated outreach
+                        Enterprise-grade AI-powered export matchmaking platform that transforms trade listings into intent-driven intelligence.
                     </p>
 
                     <div className="space-y-8">
                         <div className="flex gap-4">
                             <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center font-bold">1</div>
                             <div>
-                                <h3 className="font-bold text-lg">Approve Curated Leads</h3>
-                                <p className="text-blue-200">Swipe through AI-selected export opportunities tailored to your ICP</p>
+                                <h3 className="font-bold text-lg">AI Lead Discovery (RAG)</h3>
+                                <p className="text-blue-200">Semantic search across exporters and importers using Pinecone vector database.</p>
                             </div>
                         </div>
                         <div className="flex gap-4">
                             <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center font-bold">2</div>
                             <div>
-                                <h3 className="font-bold text-lg">AI Handles Outreach</h3>
-                                <p className="text-blue-200">Omni-channel automation across LinkedIn, Email, WhatsApp, and Calls</p>
+                                <h3 className="font-bold text-lg">Swipe-Based Vetting</h3>
+                                <p className="text-blue-200">Revolutionary B2B lead vetting with physics-based gestures and Gemini reasoning.</p>
                             </div>
                         </div>
                         <div className="flex gap-4">
                             <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center font-bold">3</div>
                             <div>
-                                <h3 className="font-bold text-lg">Attend Scheduled Meetings</h3>
-                                <p className="text-blue-200">Focus on closing deals while AI manages the pipeline</p>
+                                <h3 className="font-bold text-lg">Automated Outreach</h3>
+                                <p className="text-blue-200">Integrated management for LinkedIn, Email, and WhatsApp handles initial lead qualification.</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div className="relative z-10 text-sm text-blue-300">
-                    © 2025 ProExport. All rights reserved.
+                    © 2026 TIPE. All rights reserved.
                 </div>
 
                 <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-br from-blue-800/50 to-transparent" />
@@ -111,7 +111,7 @@ export default function LoginPage() {
                                 <input
                                     type="email"
                                     required
-                                    placeholder="demo@proexport.ai"
+                                    placeholder="test@gmail.com"
                                     className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all font-medium"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}

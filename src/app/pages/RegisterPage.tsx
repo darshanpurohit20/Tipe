@@ -30,6 +30,37 @@ export default function RegisterPage() {
   const [errorMsg, setErrorMsg] = useState("");
   const navigate = useNavigate();
 
+  const handleAutoLogin = async (email: string, password: string) => {
+    try {
+      const loginRes = await fetch(`${API}/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: email.toLowerCase(),
+          password,
+        }),
+      });
+
+      const loginData = await loginRes.json();
+
+      if (loginData.success && loginData.token) {
+        // Store token and user data
+        localStorage.setItem("token", loginData.token);
+        localStorage.setItem("user", JSON.stringify(loginData.user));
+
+        // Auto-redirect to dashboard
+        navigate("/");
+        return true;
+      }
+    } catch (err) {
+      console.error("Auto-login failed:", err);
+    }
+
+    // Fallback: redirect to login if auto-login fails
+    navigate("/login");
+    return false;
+  };
+
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -45,7 +76,8 @@ export default function RegisterPage() {
       const data = await res.json();
 
       if (res.ok) {
-        navigate("/login");
+        // Auto-login after successful registration
+        await handleAutoLogin(formData.email, formData.password);
       } else {
         // Handle validation errors from FastAPI/Pydantic
         const errorObj = { response: { data } };

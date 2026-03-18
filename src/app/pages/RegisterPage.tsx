@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router";
 import { Sparkles, Mail, Lock, Building2, Briefcase } from "lucide-react";
+import { getErrorMessage } from "../lib/errorHandler";
 
 const API = import.meta.env.VITE_API_URL;
 
@@ -46,7 +47,9 @@ export default function RegisterPage() {
       if (res.ok) {
         navigate("/login");
       } else {
-        setErrorMsg(data.detail || "Registration failed");
+        // Handle validation errors from FastAPI/Pydantic
+        const errorObj = { response: { data } };
+        setErrorMsg(getErrorMessage(errorObj));
       }
     } catch (err) {
       setErrorMsg("Connection error. Is the server running?");
@@ -105,8 +108,11 @@ export default function RegisterPage() {
                   className="w-full pl-10 pr-4 py-3 bg-slate-50 border rounded-xl focus:ring-2 focus:ring-blue-500"
                   value={formData.email}
                   onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
+                  setFormData({ 
+                    ...formData, 
+                    email: e.target.value.trim().toLowerCase() 
+                  })
+                }
                 />
               </div>
             </div>

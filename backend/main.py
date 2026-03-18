@@ -120,7 +120,7 @@ class UserSchema(BaseModel):
     password: str
     category: str
     industry: str
-    country: str
+    country: Optional[str] = None  # Auto-assigned by backend based on category
     description: Optional[str] = ""
 
 class LoginSchema(BaseModel):

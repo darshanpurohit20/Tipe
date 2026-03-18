@@ -1,4 +1,4 @@
-import { Link, Outlet, useLocation } from 'react-router';
+import { Link, Outlet, useLocation, useNavigate } from 'react-router';
 import {
   LayoutDashboard,
   ThumbsUp,
@@ -19,6 +19,7 @@ import { fetchTradeSignals } from "../lib/scroll";
 import { motion, AnimatePresence } from 'motion/react';
 import { useState, useEffect, useRef } from 'react';
 import { sendChatMessage } from '../lib/api';
+import { formatApiResponse } from '../lib/errorHandler';
 
 
 const navItems = [
@@ -33,6 +34,7 @@ const navItems = [
 ];
 
 export function Layout() {
+  const navigate = useNavigate();
   const [tradeSignals, setTradeSignals] = useState<any[]>([]);
   useEffect(() => {
     const loadSignals = async () => {
@@ -79,7 +81,7 @@ export function Layout() {
         ...prev,
         {
           role: 'ai',
-          text: response.answer || response.response || JSON.stringify(response),
+          text: formatApiResponse(response),
           time: new Date()
         }
       ]);
@@ -170,7 +172,7 @@ export function Layout() {
               onClick={() => {
                 localStorage.removeItem('user');
                 localStorage.removeItem('token');
-                window.location.href = '/login';
+                navigate('/login');
               }}
               className="w-full flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-700/50 rounded-lg transition-colors"
             >

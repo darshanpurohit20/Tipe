@@ -13,6 +13,7 @@ interface ApiErrorResponse {
 
 /**
  * Extract human-readable error message from API response
+ */
 export function getErrorMessage(error: any): string {
   // Handle Pydantic validation errors
   if (error?.response?.data?.detail) {

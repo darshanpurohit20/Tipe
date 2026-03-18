@@ -62,6 +62,10 @@ wheels/
 venv/
 ENV/
 
+# IMPORTANT: Don't ignore src/app/lib (our source code library)
+!src/app/lib/
+!src/app/lib/**
+
 # OS metadata
 .DS_Store
 Thumbs.db

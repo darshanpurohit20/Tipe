@@ -96,8 +96,15 @@ export default function LoginPage() {
             </div>
 
             {/* Right Side - Form */}
-            <div className="w-full lg:w-1/2 flex items-center justify-center p-8">
-                <div className="w-full max-w-md bg-white rounded-3xl shadow-xl p-10 border border-slate-100">
+            <div className="w-full lg:w-1/2 flex flex-col items-center justify-center p-6 sm:p-8 relative">
+                <div className="lg:hidden flex items-center gap-2 mb-8">
+                    <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                        <Sparkles className="w-5 h-5 text-white" />
+                    </div>
+                    <span className="text-xl font-bold uppercase tracking-wider text-slate-900">Tipe</span>
+                </div>
+
+                <div className="w-full max-w-md bg-white rounded-3xl shadow-xl p-6 sm:p-10 border border-slate-100">
                     <div className="mb-8">
                         <h2 className="text-3xl font-bold text-slate-900 mb-2">Welcome Back</h2>
                         <p className="text-slate-500">Sign in to continue to your dashboard</p>
@@ -163,33 +170,17 @@ export default function LoginPage() {
                         </button>
                     </form>
 
-                    <div className="mt-8 relative">
-                        <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-100"></div></div>
-                        <div className="relative flex justify-center text-xs uppercase"><span className="bg-white px-2 text-slate-400 font-medium">Or continue with</span></div>
-                    </div>
-
-                    <div className="mt-6 grid grid-cols-2 gap-4">
-                        <button className="flex items-center justify-center gap-2 py-3 px-4 border border-slate-200 rounded-xl hover:bg-slate-50 transition-all font-semibold text-slate-700">
-                            <img src="https://www.svgrepo.com/show/475656/google-color.svg" className="w-5 h-5" alt="Google" />
-                            Google
-                        </button>
-                        <button className="flex items-center justify-center gap-2 py-3 px-4 border border-slate-200 rounded-xl hover:bg-slate-50 transition-all font-semibold text-slate-700">
-                            <img src="https://www.svgrepo.com/show/448234/linkedin.svg" className="w-5 h-5" alt="LinkedIn" />
-                            LinkedIn
-                        </button>
-                    </div>
-
                     <div className="mt-8 text-center pt-6 border-t border-slate-100">
                         <p className="text-slate-600">
                             Don't have an account?{" "}
                             <Link to="/register" className="text-blue-600 font-bold hover:underline">
-                                Start free trial
+                                Register
                             </Link>
                         </p>
                     </div>
                 </div>
 
-                <div className="absolute bottom-8 text-xs text-slate-400">
+                <div className="absolute bottom-6 text-xs text-slate-400 text-center w-full px-4 lg:w-auto lg:px-0">
                     By signing in, you agree to our Terms of Service and Privacy Policy
                 </div>
             </div>

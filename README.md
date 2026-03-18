@@ -1,4 +1,4 @@
-# 🚀 TIPE - Trade Intent Prediction Engine
+#  TIPE - Trade Intent Prediction Engine
 
 ## 🌐 Live Access
 - **Frontend**: [https://tipe-theta.vercel.app/](https://tipe-theta.vercel.app/)

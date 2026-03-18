@@ -12,7 +12,7 @@ from jose import jwt
 from bson import ObjectId
 import threading
 from pinecone import Pinecone
-import google.generativeai as genai
+from groq import Groq
 load_dotenv()
 
 app = FastAPI()
@@ -27,22 +27,19 @@ app.add_middleware(
 )
 
 # -----------------------------
-# Gemini Setup (Round Robin)
+# Groq Setup (Round Robin)
 # -----------------------------
-GEMINI_API_KEYS = [k.strip() for k in os.getenv("GEMINI_API_KEYS", "").split(",") if k.strip()]
+GROQ_API_KEYS = [k.strip() for k in os.getenv("GROQ_API_KEYS", "").split(",") if k.strip()]
 
 key_index = 0
 key_lock = threading.Lock()
 
-def get_next_model():
+def get_next_client():
     global key_index
     with key_lock:
-        api_key = GEMINI_API_KEYS[key_index]
-        key_index = (key_index + 1) % len(GEMINI_API_KEYS)
-    genai.configure(api_key=api_key)
-    return genai.GenerativeModel("gemini-2.5-flash")
-
-
+        api_key = GROQ_API_KEYS[key_index]
+        key_index = (key_index + 1) % len(GROQ_API_KEYS)
+    return Groq(api_key=api_key)
 # -----------------------------
 # Pinecone Setup
 # -----------------------------
@@ -225,31 +222,81 @@ async def update_profile(email: str, update_data: UpdateUserSchema = Body(...)):
 
 def generate_answer(query, results, namespaces):
     if not results:
-        return "No relevant trade data found."
+        return "⚠️ **Not able to answer this query based on available trade data.**"
 
     context = ""
-    for r in results[:5]:
-        context += f"{r.get('fields', {})}\n"
+    for r in results[:10]:
+        fields = r.get("fields", {})
+        context += f"""
+ID: {r.get('_id')}
+Source: {r.get('_namespace', 'unknown')} ({r.get('_record_type', '')})
+Score: {r.get('_score')}
+Details: {fields}
+------------------------
+"""
+
+    ns_label = ", ".join(namespaces)
 
     prompt = f"""
-    You are TIPE AI.
-
-    User Query:
-    {query}
-
-    Data:
-    {context}
-
-    Give a clear trade insight summary.
-    """
+You are TIPE AI – Trade Intent Prediction Engine.
+User Query:
+{query}
+Namespaces Searched:
+{ns_label}
+Retrieved Trade Records (merged & ranked by relevance score):
+{context}
+IMPORTANT RULES:
+0.Start The Ans with I am Tipe Ai your own Rag Powered ChatBot 
+1. ALWAYS try to generate a report using the retrieved data, even if the match is partial.
+   Only refuse if retrieved data has ZERO connection to the query. Do NOT refuse just because
+   an industry keyword like "engineering" or "pharma" is not an exact field match — use context clues.
+2. Generate a structured professional trade intelligence report.
+3. If user specified a count like "3" or "3-4", show only that many ranked results and that many strategic insights. Otherwise default to 5 each.
+4. Each result must clearly show which data source it came from (Exporter / Importer / News).
+STRICT FORMAT:
+# Trade Intelligence Report
+## Executive Summary
+(2-3 lines summarizing findings across all searched sources)
+## Ranked Results
+For each result:
+**Rank X — [Source Type]**
+- **Entity ID:**
+- **Location:**
+- **Industry:**
+- **Revenue:**
+- **Intent Score:**
+- **Risk Indicators:**
+- **Why Relevant:**
+## Strategic Insights
+- Insight 1
+- Insight 2
+- Insight 3
+## Data Sources Searched
+{ns_label}
+DO NOT mention raw JSON or technical metadata.
+Keep formatting clean with markdown-style bold headings.
+"""
 
     try:
-        model = get_next_model()
-        res = model.generate_content(prompt)
-        return res.text.strip()
+        client = get_next_client()
+        res = client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=2000  # increased for full report
+        )
+        output = res.choices[0].message.content.strip()
+
+        refusal_phrases = [
+            "not able to answer based on available trade intelligence",
+            "not able to answer this query"
+        ]
+        if any(p in output.lower() for p in refusal_phrases) and len(output) < 200:
+            return "⚠️ **Not able to answer this query based on available trade data.**"
+
+        return output
+
     except Exception as e:
-        return f"AI Error: {str(e)}"
-    
+        return f"⚠️ **AI Error:** `{str(e)}`" 
 @app.post("/chat")
 async def chat_endpoint(payload: dict = Body(...)):
     query = payload.get("query", "")

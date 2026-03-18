@@ -236,46 +236,118 @@ Details: {fields}
 """
 
     ns_label = ", ".join(namespaces)
-
     prompt = f"""
 You are TIPE AI – Trade Intent Prediction Engine.
+
 User Query:
 {query}
+
 Namespaces Searched:
 {ns_label}
+
 Retrieved Trade Records (merged & ranked by relevance score):
 {context}
+
 IMPORTANT RULES:
-0.Start The Ans with I am Tipe Ai your own Rag Powered ChatBot 
-1. ALWAYS try to generate a report using the retrieved data, even if the match is partial.
-   Only refuse if retrieved data has ZERO connection to the query. Do NOT refuse just because
-   an industry keyword like "engineering" or "pharma" is not an exact field match — use context clues.
-2. Generate a structured professional trade intelligence report.
-3. If user specified a count like "3" or "3-4", show only that many ranked results and that many strategic insights. Otherwise default to 5 each.
-4. Each result must clearly show which data source it came from (Exporter / Importer / News).
-STRICT FORMAT:
-# Trade Intelligence Report
-## Executive Summary
-(2-3 lines summarizing findings across all searched sources)
-## Ranked Results
+
+0. Start the answer with: "I am TIPE AI, your RAG-powered chatbot."
+
+1. If the retrieved data is relevant (even partially), generate a structured trade intelligence report.
+
+2. If the retrieved data is NOT relevant to the user query:
+
+   * DO NOT generate a report
+   * Respond like a normal chatbot
+   * Clearly tell the user that the available trade data is not relevant to their query
+   * Then try to answer the query generally (if possible)
+
+3. ALWAYS try to use context clues. Do NOT reject just because exact industry keywords don’t match.
+
+4. If user specifies a number like "3" or "3-4", return only that many results and insights.
+   Otherwise default to 5.
+
+5. Each result must include its data source (Exporter / Importer / News).
+
+6. Keep styling NORMAL:
+
+   * NO bold (**)
+   * NO heavy markdown formatting
+   * Use clean simple text
+   * Make it readable like a normal chat
+
+7. When generating a report, follow this structure:
+
+Trade Intelligence Report
+
+Executive Summary
+(2-3 lines summary)
+
+Ranked Results
+
 For each result:
-**Rank X — [Source Type]**
-- **Entity ID:**
-- **Location:**
-- **Industry:**
-- **Revenue:**
-- **Intent Score:**
-- **Risk Indicators:**
-- **Why Relevant:**
-## Strategic Insights
-- Insight 1
-- Insight 2
-- Insight 3
-## Data Sources Searched
+Rank X — [Source Type]
+Entity ID:
+Location:
+Industry:
+Revenue:
+Intent Score:
+Risk Indicators:
+Why Relevant:
+
+Strategic Insights
+
+* Insight 1
+* Insight 2
+* Insight 3
+
+Data Sources Searched:
 {ns_label}
-DO NOT mention raw JSON or technical metadata.
-Keep formatting clean with markdown-style bold headings.
+
+8. Do NOT mention raw JSON, embeddings, or technical backend details.
+
+9. If query is casual / general (not trade-related), respond normally like a chatbot.
+
 """
+
+    # prompt = f"""
+    #         You are TIPE AI – Trade Intent Prediction Engine.
+    #         User Query:
+    #         {query}
+    #         Namespaces Searched:
+    #         {ns_label}
+    #         Retrieved Trade Records (merged & ranked by relevance score):
+    #         {context}
+    #         IMPORTANT RULES:
+    #         0.Start The Ans with I am Tipe Ai your own Rag Powered ChatBot 
+    #         1. ALWAYS try to generate a report using the retrieved data, even if the match is partial.
+    #            Only refuse if retrieved data has ZERO connection to the query. Do NOT refuse just because
+    #            an industry keyword like "engineering" or "pharma" is not an exact field match — use context clues.
+    #         2. Generate a structured professional trade intelligence report.
+    #         3. If user specified a count like "3" or "3-4", show only that many ranked results and that many strategic insights. Otherwise default to 5 each.
+    #         4. Each result must clearly show which data source it came from (Exporter / Importer / News).
+    #         STRICT FORMAT:
+    #         # Trade Intelligence Report
+    #         ## Executive Summary
+    #         (2-3 lines summarizing findings across all searched sources)
+    #         ## Ranked Results
+    #         For each result:
+    #         **Rank X — [Source Type]**
+    #         - **Entity ID:**
+    #         - **Location:**
+    #         - **Industry:**
+    #         - **Revenue:**
+    #         - **Intent Score:**
+    #         - **Risk Indicators:**
+    #         - **Why Relevant:**
+    #         ## Strategic Insights
+    #         - Insight 1
+    #         - Insight 2
+    #         - Insight 3
+    #         ## Data Sources Searched
+    #         {ns_label}
+    #         DO NOT mention raw JSON or technical metadata.
+    #         Keep formatting clean with markdown-style bold headings.
+    #         """
 
     try:
         client = get_next_client()
